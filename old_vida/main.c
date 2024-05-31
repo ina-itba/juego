@@ -1,4 +1,5 @@
 #include <stdio.h>
+#
 #include "matriz.h"
 #include "juego.h"
 #include "define_general.h"
@@ -11,7 +12,9 @@ int main(void){
 	char salir = 0;					// flag para salir del programa
 	char input;
 	char err;
-	unsigned int cont;				
+	int tamaño = 0;
+	unsigned int cont;
+	void* pmatriz;
 
 	// ---------- ELECCION MATRIZ INICIAL --------- //
 
@@ -33,7 +36,7 @@ int main(void){
 				
 				input = getchar();	//Se deshace del caracter '\n' que genera problemas en la funcion set
 				
-				set(mat, &salir);
+				pmatriz = set(&salir, tamaño);
 				
 				if(salir == -1) {
 					
@@ -66,7 +69,7 @@ int main(void){
 
 	do {
 
-		avance_generaciones (&salir, mat);
+		avance_generaciones (&salir, mat, tamaño);
 	
 	}
 	
