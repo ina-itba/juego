@@ -23,16 +23,18 @@ int main(void){
 	printf("-Ingrese \"y\" para configurar el estado inicial del juego.\n");
 
 	do {
+
 		err = 0;
-		while((input = getchar()) != '\n'){
+
+		while((input = getchar()) != '\n') {
 			
-			if(input == 'p' || input == 'P' || ALTO>26 || ANCHO>26){
+			if(input == 'p' || input == 'P' || ALTO > 26 || ANCHO > 26) {
 				
 				matriz_predeterminada (mat);
 				
 			}
 			
-			else if(input == 'y' || input == 'Y'){
+			else if (input == 'y' || input == 'Y') {
 				
 				input = getchar();	//Se deshace del caracter '\n' que genera problemas en la funcion set
 				
@@ -56,7 +58,7 @@ int main(void){
 			cont++;
 		}
 		
-		if(err == -1){
+		if(err == -1) {
 			
 			printf("Por favor ingrese \"p\" o \"y\" para iniciar el juego");
 		
@@ -69,7 +71,7 @@ int main(void){
 
 	do {
 
-		avance_generaciones (&salir, mat, tamaño);
+		avance_generaciones (&salir, pmatriz, tamaño);
 	
 	}
 	

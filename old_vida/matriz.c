@@ -120,17 +120,24 @@ void* set(char* salir, int tamañomatriz) {
 	unsigned char ingresoFila = 'A';
 	unsigned char celula;				//Guarda el estado de la celula
 	unsigned char automatico;			//Flag para que se autocomplete el resto de la matriz
-	int tamañoMatrizfila = 0;			//tamaño definido para las filas y columnas de la matriz en la ejecucion
+	int tamañoMatrizfila;			//tamaño definido para las filas y columnas de la matriz en la ejecucion
 	char * pmatrizdefinida;				//puntero a matriz en heap
 	void * pmatrizfinal;
+	int descarte;
 	
+	printf("Ingrese el tamaño de la matriz cuadrada: \n");
+
+	tamañoMatrizfila = ingreso_natural();
+	descarte = ingreso_natural();
+
 	pmatrizdefinida = tamaño (tamañoMatrizfila);
+
 	pfree = pmatrizdefinida;
 	pmatrizfinal = pmatrizdefinida;
 
 	tamañomatriz = tamañoMatrizfila;
 	
-	for(i = 0; i < (tamañoMatrizfila*tamañoMatrizfila); i += tamañoMatrizfila) {			//Seteo la matriz a espacios
+	for(i = 0; i < (tamañoMatrizfila * tamañoMatrizfila); i += tamañoMatrizfila) {			//Seteo la matriz a espacios
 
 		for (j = 0;j < tamañoMatrizfila; j++) {
 
@@ -159,9 +166,11 @@ void* set(char* salir, int tamañomatriz) {
 			if(automatico  == 0) {				//Si no eligio autocompletar, el estado de la celula sera el ingresado
 
 				celula = ingresoCelula();
-				if(celula == 'q')
-				{
+
+				if(celula == 'q') {
+
 					*salir = -1;
+
 					return salir;
 					
 				}
@@ -181,7 +190,7 @@ void* set(char* salir, int tamañomatriz) {
 					pmatrizdefinida[i+j] = celula;
 				}
 				
-				else{
+				else {
 					
 					pmatrizdefinida[i+j] = celula;
 				}
@@ -191,35 +200,51 @@ void* set(char* salir, int tamañomatriz) {
 			else {											//Si eligio autocompletar, no lee mas el teclado y rellena la matriz de manera automatica
 			
 				pmatrizdefinida[i+j] = celula;
+
 			}
+
 			/*------Codigo para imprimir en pantalla el estado de la matriz------*/
+
 			grillaFila = 'A';								
 			grillaColumna = 'a';
-			for(k = 0; k < (tamañoMatrizfila*tamañoMatrizfila) + 1; k += tamañoMatrizfila)		//Imprimo el estado de la matriz en tiempo real
-			{
-				for(p = 0; p < tamañoMatrizfila + 1; p++)
-				{
-					if(k == 0 && p == 0)		//El primer lugar es un espacio vacio
-					{
+
+			for(k = 0; k < (tamañoMatrizfila*tamañoMatrizfila) + 1; k += tamañoMatrizfila) {	//Imprimo el estado de la matriz en tiempo real
+
+				for(p = 0; p < tamañoMatrizfila + 1; p++) {
+
+					if(k == 0 && p == 0) {	//El primer lugar es un espacio vacio
+
 						putchar(' ');
+
 					}
-					else if(k == 0 && p >= 1)	//En la primera fila se encuentran las coordenadas de las columnas
-					{
+
+					else if(k == 0 && p >= 1) {	//En la primera fila se encuentran las coordenadas de las columnas
+
 						printf(" %c ",grillaColumna);
 						grillaColumna++;
-					}else if (p == 0)			//En la primera columna se encuentran las coordenadas de las filas
-					{
+
+					}
+
+					else if (p == 0) {			//En la primera columna se encuentran las coordenadas de las filas
+
 						putchar(grillaFila); 
 						grillaFila++;
+
 					}
-					else
-					{
-						printf("|%c|",pmatrizdefinida[k+p-2]);
+
+					else {
+
+						printf("|%c|", pmatrizdefinida[k + p - tamañoMatrizfila - 1]);
+
 					}
 				}
+
 				printf("\n");
+
 			}
+
 		}
+
 		ingresoFila++;
 	}
 
@@ -230,11 +255,8 @@ static void* tamaño (int size) {
 
 	void* pmatriz;
 
-	printf("Ingrese el tamaño de la matriz cuadrada: ");
-
-	size = ingreso_natural();
-
 	pmatriz = calloc (size*size, sizeof(char));
 
 	return pmatriz;
+
 }
