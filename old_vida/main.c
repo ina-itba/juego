@@ -6,6 +6,8 @@
 
 #define SALIR (printf("Ingreso 'q'. Fin del programa\n"))
 
+extern void* pfree;
+
 // ----- MAIN ----- //
 int main(void){
 
@@ -82,6 +84,9 @@ int main(void){
 	while (salir != -1);
 	
 	SALIR;
+
+	free (pfree); //En caso de apretar q en el teclado, se libera el espacio en la memoria heap de la matriz original y la auxiliar
+	free ((void*) mat2);
 
 	return 0;
 

@@ -84,7 +84,7 @@ void avance_generaciones (char* salir, void* pmatriz, char * mat2, int* tamano) 
 
 	gen = ingreso_natural();
 
-	if (gen == -1){ 		// escape si ingreso q
+	if (gen == -1) { 		// escape si ingreso q
 		
 		*salir = gen;
 		return;

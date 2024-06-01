@@ -45,11 +45,11 @@ int ingreso_natural (void) { 		// la funcion tiene que indicar si se ingreso un 
 
 	while (err == -1);		// si estamos obteniendo algun error, repetimos el proceso de getchar
 	
-	if(gen == 0) {
+	/*if(gen == 0) {
 
 		return 1;		// retorna 1 y avanza una generacion
 
-	}
+	}*/
 
 	return gen; 		// devuelve el numero de generaciones en int		
 

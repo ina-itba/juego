@@ -29,10 +29,10 @@ void matriz_predeterminada (char mat[ALTO][ANCHO]) {
 				mat[a][b]= '*';
 			}
 			
-			mat[(int)(ALTO/2)][(int)(ANCHO/2)+1]='*';
-			mat[((int)(ALTO/2)-2)][(int)(ANCHO/2)]='*';
-			mat[(int)(ALTO/2)][(int)(ANCHO/2)+3]='*';
-			mat[((int)(ALTO/2)-4)][(int)(ANCHO/2)]='*'; //esta config muere a los 20 aprox. queda al borde cuadrada.
+			mat[(int)(ALTO/2)][(int)(ANCHO/2)+1] = '*';
+			mat[((int)(ALTO/2)-2)][(int)(ANCHO/2)] = '*';
+			mat[(int)(ALTO/2)][(int)(ANCHO/2)+3] = '*';
+			mat[((int)(ALTO/2)-4)][(int)(ANCHO/2)] = '*'; //esta config muere a los 20 aprox. queda al borde cuadrada.
 			
 		}
 		
@@ -64,54 +64,84 @@ static unsigned char ingresoCelula(void)
 	unsigned int cont;	//Determina la cantidad de caracteres ingresados por teclado
 	char automatico; 	//Flag para determinar si el usuario quiere llenar el resto de la matriz de manera automatica
 	
-	do									
-	{
+	do {
+
 		err = 0;
 		cont = 0;
 		automatico = 0;
-		while((c = getchar()) != '\n')				//Lee los caracteres ingresados hasta encontrar un "Enter"
-		{
-			if(cont == 0 && c == 'q' && automatico == 0)	//Si el primer caracter ingresado es 'q', se termina el programa
-			{
+
+		while((c = getchar()) != '\n') {				//Lee los caracteres ingresados hasta encontrar un "Enter"
+
+			if(cont == 0 && c == 'q' && automatico == 0) {	//Si el primer caracter ingresado es 'q', se termina el programa
+
 				return 'q';
-			}else if(cont == 0 && (c == 'a' || c == 'A'))	//Si el primer caracter es 'a', significa que el usuario quiere autocompletar
-			{
+
+			}
+
+			else if(cont == 0 && (c == 'a' || c == 'A')) {	//Si el primer caracter es 'a', significa que el usuario quiere autocompletar
+
 				automatico = 1;						//No aumenta el contador para no activar el flag de error
-			}else
-			{
-				if(c == 'v' || c == 'V')			//Ingreso de celula viva
-				{
+
+			}
+
+			else {
+
+				if(c == 'v' || c == 'V') {	//Ingreso de celula viva
+
 					cel = '*';
-				}else if (c == 'm' || c == 'M')		//Ingreso de celula muerta
-				{
+
+				}
+
+				else if (c == 'm' || c == 'M') {		//Ingreso de celula muerta
+
 					cel = ' ';
+
 				}
-				else								//Para cualquier otro caracter indica error						
-				{
+				else {								//Para cualquier otro caracter indica error
+
 					err = -1;
+
 				}
+
 				cont++;
+
 			}
+
 		}
-		if(cont > 1 || (cont == 0 && automatico == 1) || (cont == 0 && c == '\n'))	//Si se ingreso mas de un caracter,se ingreso una 'a' y nada mas indica error o solo un enter
-			{
+
+		if(cont > 1 || (cont == 0 && automatico == 1) || (cont == 0 && c == '\n')) { //Si se ingreso mas de un caracter,se ingreso una 'a' y nada mas indica error o solo un enter
+
 				err = -1;
-			}
-		if(err == -1)
-		{
-			printf("Error, intente ingresar el estado de la celula nuevamente: ") ;
+
 		}
+
+		if(err == -1) {
+
+			printf("Error, intente ingresar el estado de la celula nuevamente: ") ;
+
+		}
+
 	}
 	while(err == -1);						//Repite el loop hasta que no haya errores
-	if(automatico == 1 && cel == '*')
-	{
+
+	if(automatico == 1 && cel == '*') {
+
 		return 'v';	
-	}else if(automatico == 1 && cel == ' ')
-	{
-		return 'm';
-	}else{
-		return cel;
+
 	}
+
+	else if(automatico == 1 && cel == ' ') {
+
+		return 'm';
+
+	}
+
+	else {
+
+		return cel;
+
+	}
+
 }
 
 void* set(char* salir, int* tamanomatriz) {
@@ -121,17 +151,15 @@ void* set(char* salir, int* tamanomatriz) {
 	unsigned char grillaColumna;		//Posicion de la fila en la grilla
 	unsigned char ingresoColumna;
 	unsigned char ingresoFila = 'A';
-	unsigned char celula;				//Guarda el estado de la celula
-	unsigned char automatico;			//Flag para que se autocomplete el resto de la matriz
+	unsigned char celula = 0;				//Guarda el estado de la celula
+	unsigned char automatico = 0;			//Flag para que se autocomplete el resto de la matriz
 	int tamanoMatrizfila = 0;			//tamaño definido para las filas y columnas de la matriz en la ejecucion
 	char * pmatrizdefinida;				//puntero a matriz en heap
 	void * pmatrizfinal;
-	int descarte;
-	
+
 	printf("Ingrese el tamaño de la matriz cuadrada: \n");
 
 	tamanoMatrizfila = ingreso_natural();
-	descarte = ingreso_natural();
 
 	pmatrizdefinida = tamano (tamanoMatrizfila);
 
