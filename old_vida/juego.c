@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static int contador (void* pmatriz, int f, int c, int tamaño);
+static int contador (void* pmatriz, int f, int c, int tamano);
 
 // CONTADOR ASTERISCOS //
-static int contador (void* pmatriz, int f, int c, int tamaño){ //f y c son las COORDENADAS de la CELULA A ANALIZAR
+static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las COORDENADAS de la CELULA A ANALIZAR
 
 	// MAT 3X3 RODEANDO PUNTERO //	
 	char mat3[3][3]; 				//mat 3 sera una matriz de 3x3 alrededor de la celula a analizar
@@ -19,7 +19,7 @@ static int contador (void* pmatriz, int f, int c, int tamaño){ //f y c son las 
 
 	p = pmatriz;
 
-	for (i = f-1;i < f+2;i += tamaño) { 	// contador desde la fila anterior hasta la fila siguiente a puntero
+	for (i = f-1;i < f+2;i += tamano) { 	// contador desde la fila anterior hasta la fila siguiente a puntero
 
 		j3 = 0;
 					
@@ -70,15 +70,13 @@ static int contador (void* pmatriz, int f, int c, int tamaño){ //f y c son las 
 	return cast;
 }
 
-void avance_generaciones (char* salir, void* pmatriz, int tamaño) {
+void avance_generaciones (char* salir, void* pmatriz, char * mat2, int* tamano) {
 
 	int cast; // contador asteriscos
-	char* mat2;	// creo una matriz 2 donde ir cargando los datos nuevos para no sobreescribir la matriz que tiene los datos actuales (sobre los cuales trabajo en el mismo loop)
 	int gen;
 	int g, i, j, x, y;
 	char *p;
-
-	mat2 = calloc (tamaño, sizeof (char));
+	int size = *tamano;
 
 	p = pmatriz;
 	
@@ -95,15 +93,15 @@ void avance_generaciones (char* salir, void* pmatriz, int tamaño) {
 	
 	printf("Avanzando %d generaciones:\n",gen);
 	
-	for (g = 1; g <= gen;g++){			// este for debe analizar cada casilla y sobreescribirla con la nueva config
+	for (g = 1; g <= gen;g++) {			// este for debe analizar cada casilla y sobreescribirla con la nueva config
 	
-		for (i = 0;i < (tamaño*tamaño);i += tamaño){ 		//por cual fila voy
+		for (i = 0;i < (size*size);i += size){ 		//por cual fila voy
 			
 			cast = 0;
 			
-			for (j = 0;j < tamaño;j++) { 	//por cual columna voy
+			for (j = 0;j < size;j++) { 	//por cual columna voy
 				
-				cast = contador(pmatriz,i,j, tamaño);
+				cast = contador(pmatriz,i,j, size);
 				
 				switch(p[i+j]){
 					
@@ -153,9 +151,9 @@ void avance_generaciones (char* salir, void* pmatriz, int tamaño) {
 	// Ahora que ya sali del bucle puedo volver a almacenar en mat los datos obtenidos para volver a modificarlos
 	// por el casod de que gen>1	
 
-		for (y = 0;y < (tamaño*tamaño);y += tamaño){
+		for (y = 0;y < (size*size);y += size){
 			
-			for (x = 0;x < tamaño;x++){
+			for (x = 0;x < size;x++){
 				
 				p[y+x] = mat2[y+x];	//copia cada elemento en el mismo lugar pero de la otra matriz (= size)
 			
@@ -166,11 +164,11 @@ void avance_generaciones (char* salir, void* pmatriz, int tamaño) {
 	printf("\n"); //bajo casilla para hacer el nuevo display
 	
 // ----- DISPLAY NUEVO ----- //		
-	for (i = 0;i < (tamaño*tamaño);i += tamaño){ //por cual fila voy
+	for (i = 0;i < (size*size);i += size){ //por cual fila voy
 		
 		printf("|");
 		
-		for (j = 0;j < tamaño;j++){ //por cual columna voy
+		for (j = 0;j < size;j++){ //por cual columna voy
 			
 			printf("%c|", p[i+j]);
 		

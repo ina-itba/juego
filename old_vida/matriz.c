@@ -5,18 +5,21 @@
 #include "ingreso_natural.h"
 
 static unsigned char ingresoCelula(void);			//Funcion para ingresar por teclado el estado de una celula
-static void* tamaño (int size);
+static void* tamano (int size);
+//static void impresionMatriz (char* pmatriz);
 
 void * pfree;						//puntero para liberar espacio en el heap (global multiarchivo)
 
 void matriz_predeterminada (char mat[ALTO][ANCHO]) {
 
+	int a, b, i, j;
+
 // defino mat opc A
 	printf("\nOpción A: \n");
 
-	for (int a=0;a<ALTO;a++){ 		// por cual fila voy 
+	for (a = 0;a < ALTO;a++){ 		// por cual fila voy
 		
-		for (int b=0;b<ANCHO;b++){ 	// por cual columna voy
+		for (b = 0;b < ANCHO;b++){ 	// por cual columna voy
 			
 			mat[a][b]= ' '; 		// defino espacios en todo el array
 			
@@ -35,11 +38,11 @@ void matriz_predeterminada (char mat[ALTO][ANCHO]) {
 		
 	}
 	// ----- DISPLAY A ----- //
-	for (int i=0;i<ALTO;i++){ //por cual fila voy 
+	for (i = 0;i < ALTO;i++){ //por cual fila voy
 		
 		printf("|");
 		
-		for (int j=0;j<ANCHO;j++){ //por cual columna voy
+		for (j = 0;j < ANCHO;j++){ //por cual columna voy
 			
 			printf("%c|", mat[i][j]);
 		
@@ -111,7 +114,7 @@ static unsigned char ingresoCelula(void)
 	}
 }
 
-void* set(char* salir, int tamañomatriz) {
+void* set(char* salir, int* tamanomatriz) {
 	
 	int i,j,k,p;
 	unsigned char grillaFila;			//Posicion de la columna en la grilla
@@ -120,26 +123,26 @@ void* set(char* salir, int tamañomatriz) {
 	unsigned char ingresoFila = 'A';
 	unsigned char celula;				//Guarda el estado de la celula
 	unsigned char automatico;			//Flag para que se autocomplete el resto de la matriz
-	int tamañoMatrizfila;			//tamaño definido para las filas y columnas de la matriz en la ejecucion
+	int tamanoMatrizfila = 0;			//tamaño definido para las filas y columnas de la matriz en la ejecucion
 	char * pmatrizdefinida;				//puntero a matriz en heap
 	void * pmatrizfinal;
 	int descarte;
 	
 	printf("Ingrese el tamaño de la matriz cuadrada: \n");
 
-	tamañoMatrizfila = ingreso_natural();
+	tamanoMatrizfila = ingreso_natural();
 	descarte = ingreso_natural();
 
-	pmatrizdefinida = tamaño (tamañoMatrizfila);
+	pmatrizdefinida = tamano (tamanoMatrizfila);
 
 	pfree = pmatrizdefinida;
 	pmatrizfinal = pmatrizdefinida;
 
-	tamañomatriz = tamañoMatrizfila;
+	*tamanomatriz = tamanoMatrizfila;
 	
-	for(i = 0; i < (tamañoMatrizfila * tamañoMatrizfila); i += tamañoMatrizfila) {			//Seteo la matriz a espacios
+	for(i = 0; i < (tamanoMatrizfila * tamanoMatrizfila); i += tamanoMatrizfila) {			//Seteo la matriz a espacios
 
-		for (j = 0;j < tamañoMatrizfila; j++) {
+		for (j = 0;j < tamanoMatrizfila; j++) {
 
 			pmatrizdefinida [i+j] = ' ';
 
@@ -153,11 +156,11 @@ void* set(char* salir, int tamañomatriz) {
 	printf("-Ingrese \"av\" para autocompletar el resto de la matriz con celulas vivas.\n");
 	printf("-Ingrese \"am\" para autocompletar el resto de la matriz con celulas muertas.\n");
 	
-	for(i = 0; i < (tamañoMatrizfila*tamañoMatrizfila); i += tamañoMatrizfila)			//Ingreso celulas vivas o muertas a la matriz
-	{
+	for(i = 0; i < (tamanoMatrizfila*tamanoMatrizfila); i += tamanoMatrizfila) {		//Ingreso celulas vivas o muertas a la matriz
+
 		ingresoColumna = 'a';
 
-		for(j = 0; j < tamañoMatrizfila; j++) {
+		for(j = 0; j < tamanoMatrizfila; j++) {
 
 			printf("%c%c:\n", ingresoFila, ingresoColumna);	//Coordenada en la que se encuentra la celula
 
@@ -208,9 +211,9 @@ void* set(char* salir, int tamañomatriz) {
 			grillaFila = 'A';								
 			grillaColumna = 'a';
 
-			for(k = 0; k < (tamañoMatrizfila*tamañoMatrizfila) + 1; k += tamañoMatrizfila) {	//Imprimo el estado de la matriz en tiempo real
+			for(k = 0; k < (tamanoMatrizfila*tamanoMatrizfila) + 1; k += tamanoMatrizfila) {	//Imprimo el estado de la matriz en tiempo real
 
-				for(p = 0; p < tamañoMatrizfila + 1; p++) {
+				for(p = 0; p < tamanoMatrizfila + 1; p++) {
 
 					if(k == 0 && p == 0) {	//El primer lugar es un espacio vacio
 
@@ -234,7 +237,7 @@ void* set(char* salir, int tamañomatriz) {
 
 					else {
 
-						printf("|%c|", pmatrizdefinida[k + p - tamañoMatrizfila - 1]);
+						printf("|%c|", pmatrizdefinida[k + p - tamanoMatrizfila - 1]);
 
 					}
 				}
@@ -251,11 +254,11 @@ void* set(char* salir, int tamañomatriz) {
 	return pmatrizfinal;
 }
 
-static void* tamaño (int size) {
+static void* tamano (int size) {
 
 	void* pmatriz;
 
-	pmatriz = calloc (size*size, sizeof(char));
+	pmatriz = calloc ((size*size), sizeof(char));
 
 	return pmatriz;
 

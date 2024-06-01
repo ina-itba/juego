@@ -1,8 +1,9 @@
 #include <stdio.h>
-#
+#include <stdlib.h>
 #include "matriz.h"
 #include "juego.h"
 #include "define_general.h"
+
 #define SALIR (printf("Ingreso 'q'. Fin del programa\n"))
 
 // ----- MAIN ----- //
@@ -12,9 +13,10 @@ int main(void){
 	char salir = 0;					// flag para salir del programa
 	char input;
 	char err;
-	int tamaño = 0;
+	int tamano = 0;
 	unsigned int cont;
 	void* pmatriz;
+	char* mat2;						//matriz auxiliar para ir cargando los datos de avance de generacion
 
 	// ---------- ELECCION MATRIZ INICIAL --------- //
 
@@ -38,7 +40,7 @@ int main(void){
 				
 				input = getchar();	//Se deshace del caracter '\n' que genera problemas en la funcion set
 				
-				pmatriz = set(&salir, tamaño);
+				pmatriz = set(&salir, &tamano);
 				
 				if(salir == -1) {
 					
@@ -69,9 +71,11 @@ int main(void){
 
 	// ---------- AVANCE DE GENERACIONES --------- //	
 
+	mat2 = calloc (tamano, sizeof (char));
+
 	do {
 
-		avance_generaciones (&salir, pmatriz, tamaño);
+		avance_generaciones (&salir, pmatriz, mat2, &tamano);
 	
 	}
 	
