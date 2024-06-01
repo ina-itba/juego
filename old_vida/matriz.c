@@ -5,46 +5,48 @@
 #include "ingreso_natural.h"
 
 static unsigned char ingresoCelula(void);			//Funcion para ingresar por teclado el estado de una celula
-static void* tamano (int size);
-//static void impresionMatriz (char* pmatriz);
+static void* tamano (int size);	//funcion encargada de reservar memoria en heap según el tamaño definido por el usuario
+static void printEstadomatriz (char* pmatriz, int size);
 
 void * pfree;						//puntero para liberar espacio en el heap (global multiarchivo)
 
-void matriz_predeterminada (char mat[ALTO][ANCHO]) {
+void matriz_predeterminada (char mat[ALTO*ANCHO]) {
 
 	int a, b, i, j;
 
 // defino mat opc A
 	printf("\nOpción A: \n");
 
-	for (a = 0;a < ALTO;a++){ 		// por cual fila voy
+	for (a = 0;a < ALTO*ALTO;a += ALTO){ 		// por cual fila voy
 		
-		for (b = 0;b < ANCHO;b++){ 	// por cual columna voy
+		for (b = 0;b < ANCHO;b++) { 	// por cual columna voy
 			
-			mat[a][b]= ' '; 		// defino espacios en todo el array
+			mat[a + b]= ' '; 		// defino espacios en todo el array
 			
 			// defino configuracion de asteriscos iniciales
 			
-			if (a==b && (a<(int)(ALTO/2)+2) && (a>(int)(ALTO/2)-2)) {// condiciones rndms para dibujo inicial
-				mat[a][b]= '*';
+			if (a == b && (a < (int)(ALTO*2)+2) && (b < (int)(ANCHO-2))) {// condiciones rndms para dibujo inicial
+
+				mat[a + b]= '*';
+
 			}
 			
-			mat[(int)(ALTO/2)][(int)(ANCHO/2)+1] = '*';
-			mat[((int)(ALTO/2)-2)][(int)(ANCHO/2)] = '*';
-			mat[(int)(ALTO/2)][(int)(ANCHO/2)+3] = '*';
-			mat[((int)(ALTO/2)-4)][(int)(ANCHO/2)] = '*'; //esta config muere a los 20 aprox. queda al borde cuadrada.
+			mat[(int)(ALTO*2) + (int)(ANCHO/2)+1] = '*';
+			mat[((int)(ALTO*2)-2) + (int)(ANCHO/2)] = '*';
+			mat[(int)(ALTO/2) + (int)(ANCHO/2)+3] = '*';
+			mat[((int)(ALTO/2)-4) + (int)(ANCHO*2)] = '*'; //esta config muere a los 20 aprox. queda al borde cuadrada.
 			
 		}
 		
 	}
 	// ----- DISPLAY A ----- //
-	for (i = 0;i < ALTO;i++){ //por cual fila voy
+	for (i = 0;i < ALTO*ANCHO;i += ALTO){ //por cual fila voy
 		
 		printf("|");
 		
 		for (j = 0;j < ANCHO;j++){ //por cual columna voy
 			
-			printf("%c|", mat[i][j]);
+			printf("%c|", mat[i+j]);
 		
 		}
 		
@@ -146,9 +148,7 @@ static unsigned char ingresoCelula(void)
 
 void* set(char* salir, int* tamanomatriz) {
 	
-	int i,j,k,p;
-	unsigned char grillaFila;			//Posicion de la columna en la grilla
-	unsigned char grillaColumna;		//Posicion de la fila en la grilla
+	int i,j;
 	unsigned char ingresoColumna;
 	unsigned char ingresoFila = 'A';
 	unsigned char celula = 0;				//Guarda el estado de la celula
@@ -159,14 +159,14 @@ void* set(char* salir, int* tamanomatriz) {
 
 	printf("Ingrese el tamaño de la matriz cuadrada: \n");
 
-	tamanoMatrizfila = ingreso_natural();
+	tamanoMatrizfila = ingreso_natural(); //ingreso de tamaño de matriz cuadrado a gusto por el usuario
 
-	pmatrizdefinida = tamano (tamanoMatrizfila);
+	pmatrizdefinida = tamano (tamanoMatrizfila); //obtencion del puntero a la matriz alojada en el heap de dimension variable
 
-	pfree = pmatrizdefinida;
-	pmatrizfinal = pmatrizdefinida;
+	pfree = pmatrizdefinida; //copia del puntero a la matriz utilizada
+	pmatrizfinal = pmatrizdefinida; //copia del puntero a la matriz utilizada
 
-	*tamanomatriz = tamanoMatrizfila;
+	*tamanomatriz = tamanoMatrizfila; //copia de la dimension de las filas de la matriz cuadrada al argumento de entrada para su posterior utilizacion en otras funciones
 	
 	for(i = 0; i < (tamanoMatrizfila * tamanoMatrizfila); i += tamanoMatrizfila) {			//Seteo la matriz a espacios
 
@@ -184,6 +184,8 @@ void* set(char* salir, int* tamanomatriz) {
 	printf("-Ingrese \"av\" para autocompletar el resto de la matriz con celulas vivas.\n");
 	printf("-Ingrese \"am\" para autocompletar el resto de la matriz con celulas muertas.\n");
 	
+	//A la matriz utilizada alojada en la memoria heap la tomamos como una arreglo de tamaño FILAS*COLUMNAS
+
 	for(i = 0; i < (tamanoMatrizfila*tamanoMatrizfila); i += tamanoMatrizfila) {		//Ingreso celulas vivas o muertas a la matriz
 
 		ingresoColumna = 'a';
@@ -234,45 +236,7 @@ void* set(char* salir, int* tamanomatriz) {
 
 			}
 
-			/*------Codigo para imprimir en pantalla el estado de la matriz------*/
-
-			grillaFila = 'A';								
-			grillaColumna = 'a';
-
-			for(k = 0; k < (tamanoMatrizfila*tamanoMatrizfila) + 1; k += tamanoMatrizfila) {	//Imprimo el estado de la matriz en tiempo real
-
-				for(p = 0; p < tamanoMatrizfila + 1; p++) {
-
-					if(k == 0 && p == 0) {	//El primer lugar es un espacio vacio
-
-						putchar(' ');
-
-					}
-
-					else if(k == 0 && p >= 1) {	//En la primera fila se encuentran las coordenadas de las columnas
-
-						printf(" %c ",grillaColumna);
-						grillaColumna++;
-
-					}
-
-					else if (p == 0) {			//En la primera columna se encuentran las coordenadas de las filas
-
-						putchar(grillaFila); 
-						grillaFila++;
-
-					}
-
-					else {
-
-						printf("|%c|", pmatrizdefinida[k + p - tamanoMatrizfila - 1]);
-
-					}
-				}
-
-				printf("\n");
-
-			}
+			printEstadomatriz (pmatrizdefinida, tamanoMatrizfila);
 
 		}
 
@@ -284,10 +248,53 @@ void* set(char* salir, int* tamanomatriz) {
 
 static void* tamano (int size) {
 
-	void* pmatriz;
-
-	pmatriz = calloc ((size*size), sizeof(char));
+	void* pmatriz = calloc ((size*size), sizeof(char)); //defino puntero a void y lo inicializo en la salida del calloc
 
 	return pmatriz;
 
 }
+
+static void printEstadomatriz (char* pmatriz, int size) { /*------Codigo para imprimir en pantalla el estado de la matriz definida por el usuario------*/
+
+	int k, p;
+	unsigned char grillaFila = 'A';	//Posicion de la columna en la grilla
+	unsigned char grillaColumna = 'a'; //Posicion de la fila en la grilla
+
+	for(k = 0; k < (size*size) + 1; k += size) {	//Imprimo el estado de la matriz en tiempo real
+
+		for(p = 0; p < size + 1; p++) {
+
+			if(k == 0 && p == 0) {	//El primer lugar es un espacio vacio
+
+				putchar(' ');
+
+			}
+
+			else if(k == 0 && p >= 1) {	//En la primera fila se encuentran las coordenadas de las columnas
+
+				printf(" %c ",grillaColumna);
+				grillaColumna++;
+
+			}
+
+			else if (p == 0) {			//En la primera columna se encuentran las coordenadas de las filas
+
+				putchar(grillaFila);
+
+				grillaFila++;
+
+			}
+
+			else {
+
+				printf("|%c|", pmatriz[k + p - size - 1]);
+
+			}
+		}
+
+		printf("\n");
+
+	}
+
+}
+

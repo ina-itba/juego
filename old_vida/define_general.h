@@ -1,5 +1,6 @@
 #define ANCHO 5
 #define ALTO 5
+#define PREDETERMINADA 1
 
 // ------ ATENCION ------ //
 /*	Tener en cuenta que si se elige un alto o un ancho mayor a 26 no funcionara la opcion de 

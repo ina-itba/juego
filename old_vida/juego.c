@@ -33,7 +33,7 @@ static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las C
 
         	}
 
-        	else if (i >= ALTO || j >= ANCHO) {
+        	else if (i >= tamano*tamano || j >= tamano) {
 
         		mat3[i3][j3] = -1;
 

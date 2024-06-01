@@ -11,10 +11,10 @@ extern void* pfree;
 // ----- MAIN ----- //
 int main(void){
 
-	char mat[ALTO][ANCHO];			// matriz del juego
+	char mat[ALTO*ANCHO];			// matriz del juego
 	char salir = 0;					// flag para salir del programa
 	char input;
-	char err;
+	char err, tipo = 0;					//la variable tipo indica si el usuario eligio la opcion predeterminada o no
 	int tamano = 0;
 	unsigned int cont;
 	void* pmatriz;
@@ -34,6 +34,8 @@ int main(void){
 			
 			if(input == 'p' || input == 'P' || ALTO > 26 || ANCHO > 26) {
 				
+				tipo = PREDETERMINADA;
+
 				matriz_predeterminada (mat);
 				
 			}
@@ -73,16 +75,26 @@ int main(void){
 
 	// ---------- AVANCE DE GENERACIONES --------- //	
 
+	if (tipo == PREDETERMINADA) {
+
+		tamano = ANCHO;
+
+		mat2 = calloc (ANCHO, sizeof (char));
+
+		pmatriz = mat;
+
+	}
+
 	mat2 = calloc (tamano, sizeof (char));
 
 	do {
 
 		avance_generaciones (&salir, pmatriz, mat2, &tamano);
-	
+
 	}
-	
+
 	while (salir != -1);
-	
+
 	SALIR;
 
 	free (pfree); //En caso de apretar q en el teclado, se libera el espacio en la memoria heap de la matriz original y la auxiliar

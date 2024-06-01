@@ -7,12 +7,12 @@ int ingreso_natural (void) { 		// la funcion tiene que indicar si se ingreso un 
 
 	char c;
 	char err; 					// flag para saber si hubo error (no esta entre los ascis numericos)
-	unsigned int gen; 			// variable que devolvera: la cantidad de generaciones
+	unsigned int gen;
 	
 	do {
 		
 		err = 0; 			// reiniciamos flag error
-		gen = 0;			// reinicio num gen, el calculado antes se descarta (esto si es la segunda vez del do)
+		gen = 0;			// reinicio el numero gen, el calculado antes se descarta (esto si es la segunda vez del do)
 		c = 0;				// reiniciamos para pedir entrada de nuevo
 		
 		while ((c = getchar()) != '\n') {	// evalua valores de entrada hasta el ultimo en la entrada, el
@@ -45,7 +45,7 @@ int ingreso_natural (void) { 		// la funcion tiene que indicar si se ingreso un 
 
 	while (err == -1);		// si estamos obteniendo algun error, repetimos el proceso de getchar
 
-	return gen; 		// devuelve el numero de generaciones en int		
+	return gen; 		// devuelve el numero obtenid en formato int
 
 }
 
