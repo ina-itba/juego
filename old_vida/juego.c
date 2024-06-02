@@ -70,13 +70,14 @@ static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las C
 	return cast;
 }
 
-void avance_generaciones (char* salir, void* pmatriz, char * mat2, int* tamano) {
+void avance_generaciones (char* salir, void* pmatriz, char * mat2, int f, int c) {
+
 
 	int cast; // contador asteriscos
 	int gen;
 	int g, i, j, x, y;
 	char *p;
-	int size = *tamano;
+	int size = f*c;
 
 	p = pmatriz;
 	
@@ -161,6 +162,8 @@ void avance_generaciones (char* salir, void* pmatriz, char * mat2, int* tamano) 
 		}
 	}	
 	
+	// CAMBIAR ALEGRO  CAMBIARRRRRRRRRRR , pasar p
+
 	printf("\n"); //bajo casilla para hacer el nuevo display
 	
 // ----- DISPLAY NUEVO ----- //		
