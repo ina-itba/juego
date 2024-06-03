@@ -1,15 +1,17 @@
+#include <allegro5/allegro5.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_primitives.h>
 #include "define_general.h"
 #include "ingreso_natural.h"
 #include "juego.h"
 #include <stdio.h>
 #include <stdlib.h>
 //allegro
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_primitives.h>
+
+#define TAM_CEL 30
 
 static int contador (void* pmatriz, int f, int c, int tamano);
-static void display_matriz(char* p,int f, int c);
+static void display_matriz(char* p, int size, int tamanofila);
 
 // CONTADOR ASTERISCOS //
 static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las COORDENADAS de la CELULA A ANALIZAR
@@ -75,17 +77,15 @@ static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las C
 	return cast;
 }
 
-void avance_generaciones (char* salir, void* pmatriz, char * mat2, int* tamano) {
+void avance_generaciones (char* salir, void* pmatriz, char * mat2, int size, int tamanofila) {
 
 
 
 	int cast; // contador asteriscos
 	int gen;
 	int g, i, j, x, y;
-	char *p;
-	int size = *tamano;
+	char *p = pmatriz;
 
-	p = pmatriz;
 	
 	printf("Ingrese cantidad de generaciones a avanzar:\n");
 
@@ -172,64 +172,42 @@ void avance_generaciones (char* salir, void* pmatriz, char * mat2, int* tamano) 
 
 	printf("\n"); //bajo casilla para hacer el nuevo display
 	
-	/*
-// ----- DISPLAY NUEVO ----- //		
-	for (i = 0;i < (size*size);i += size){ //por cual fila voy
-		
-		printf("|");
-		
-		for (j = 0;j < size;j++){ //por cual columna voy
-			
-			printf("%c|", p[i+j]);
-		
-		}
-		
-		printf("\n");
-	}
-	*/
+
 
 	// INTEGRACION DISPLAY ALLEGRO
 	// SETUP ALLEGRO
-	int f,c;
 
-	al_init();
 	al_install_keyboard();
 
-	//ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
 	ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
-	ALLEGRO_DISPLAY* disp = al_create_display(320, 160);
-	ALLEGRO_FONT* font = al_create_builtin_font();
+	ALLEGRO_DISPLAY* disp = al_create_display(tamanofila*TAM_CEL, tamanofila*TAM_CEL);
+	ALLEGRO_TIMER * timer = al_create_timer(1.0/30.0);
 
 	al_register_event_source(queue, al_get_keyboard_event_source());
 	al_register_event_source(queue, al_get_display_event_source(disp));
-	//al_register_event_source(queue, al_get_timer_event_source(timer));
-
-	bool redraw = true;
+	al_register_event_source(queue, al_get_timer_event_source(timer));
 	ALLEGRO_EVENT event;
 
 	// dibujar
 	al_init_primitives_addon();
+	al_start_timer(timer);
 
-	//iniciamos contador de tiempo (clock)
-	//al_start_timer(timer);
-
-	//while(1){
 	al_wait_for_event(queue, &event);
 
-	if((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)){
+	if(event.type == ALLEGRO_EVENT_TIMER)
+	{
+		printf("hola");
+	}
+	else if((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)){
 		return;
 	}
 
 	if(al_is_event_queue_empty(queue))
 	{
-		//al_clear_to_color(al_map_rgb(0, 0, 0));
-		//al_draw_text(font, al_map_rgb(255, 255, 255), 0, 0, 0, "Hello world!");
 
-		char p[32*32];	//arr de ejemplo, lo manejamos como gran arr
+		//char p[32*32];	//arr de ejemplo, lo manejamos como gran arr
 
-		int f=32;
-		int c=32;
-		for(int i = 0; i<(f*c); i+=c){
+		/*for(int i = 0; i<(f*c); i+=c){
 			for(int j=0; j<32; j++){
 				if((j%2) != 0){
 					*(p+i+j) = ' ';
@@ -237,38 +215,48 @@ void avance_generaciones (char* salir, void* pmatriz, char * mat2, int* tamano) 
 					*(p+i+j) = '*';
 				}
 			}
+		}*/
+		/*for(unsigned int i = 0; i < size; i+=tamanofila)
+		{
+			for(unsigned int j; i < tamanofila; j++)
+			{
+				printf("%c",p[i+j]);
+			}
+			printf("\n");
 		}
+		printf("\n");*/
 
-		display_matriz(p,32,32);
+		display_matriz(p,size,tamanofila);
 
 		al_flip_display();
 
-		redraw = false;
-	
+	}
+
+	/*al_destroy_display(disp);
+	al_destroy_event_queue(queue);
+	al_destroy_timer(timer);*/
+
 }
-}
 
 
-static void display_matriz(char* p,int f, int c){
+static void display_matriz(char* p,int size, int tamanofila){
 
-	int tam_cel = 10;
 	int n_cuad = 0;
 
-	for(int i = 0; i<(f*c); i+=c){
-			for(int j=0; j<32; j++){
-				//if(p[i][j] == '*'){		//funciona on tipo de dato matriz, tenemos q hacer funcionar con punteros
-				if( *(p+i+j) == '*'){
+	for(int i = 0; i<size; i+=tamanofila){
+			for(int j=0; j<tamanofila; j++){
+				if( p[i+j] == '*'){
 					// dibujamos una celula
-					al_draw_filled_rectangle(j*tam_cel,n_cuad*tam_cel,j*tam_cel+tam_cel,n_cuad*tam_cel+tam_cel,al_map_rgb_f(255,0,0));
+					al_draw_filled_rectangle(j*TAM_CEL,n_cuad*TAM_CEL,j*TAM_CEL+TAM_CEL,n_cuad*TAM_CEL+TAM_CEL,al_map_rgb_f(255,0,0));
 				}
 			}
 			n_cuad++;
 		}
 
 	// hacemos las lineas separadoras de celulas
-	for(int i = 0; i < (f*c)-1; i++){
-			al_draw_line(0,i*tam_cel,c*tam_cel,i*tam_cel,al_map_rgb_f(128,128,128), 1);
-			al_draw_line(i*tam_cel,0,i*tam_cel,c*tam_cel,al_map_rgb_f(128,128,128), 1);
+	for(int i = 0; i < size; i++){
+			al_draw_line(0,i*TAM_CEL,tamanofila*TAM_CEL,i*TAM_CEL,al_map_rgb_f(128,128,128), 1);
+			al_draw_line(i*TAM_CEL,0,i*TAM_CEL,tamanofila*TAM_CEL,al_map_rgb_f(128,128,128), 1);
 		}
 
 }

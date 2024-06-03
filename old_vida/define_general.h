@@ -1,5 +1,5 @@
-#define ANCHO 5
-#define ALTO 5
+#define ANCHO 20
+#define ALTO 20
 #define PREDETERMINADA 1
 
 // ------ ATENCION ------ //

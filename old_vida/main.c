@@ -3,6 +3,7 @@
 #include "matriz.h"
 #include "juego.h"
 #include "define_general.h"
+#include <allegro5/allegro5.h>
 
 #define SALIR (printf("Ingreso 'q'. Fin del programa\n"))
 
@@ -16,6 +17,7 @@ int main(void){
 	char input;
 	char err, tipo = 0;					//la variable tipo indica si el usuario eligio la opcion predeterminada o no
 	int tamano = 0;
+	int tamanofila = 0;
 	unsigned int cont;
 	void* pmatriz;
 	char* mat2;						//matriz auxiliar para ir cargando los datos de avance de generacion
@@ -25,6 +27,8 @@ int main(void){
 	printf("Quiere ingresar el estado inicial del juego? O prefiere una disposicion predeterminada?\n");
 	printf("-Ingrese \"p\" para la opcion predeterminada.\n");
 	printf("-Ingrese \"y\" para configurar el estado inicial del juego.\n");
+
+	al_init();
 
 	do {
 
@@ -36,6 +40,8 @@ int main(void){
 				
 				tipo = PREDETERMINADA;
 
+				tamanofila = ANCHO;
+
 				matriz_predeterminada (mat);
 				
 			}
@@ -44,7 +50,7 @@ int main(void){
 				
 				input = getchar();	//Se deshace del caracter '\n' que genera problemas en la funcion set
 				
-				pmatriz = set(&salir, &tamano);
+				pmatriz = set(&salir, &tamano, &tamanofila);
 				
 				if(salir == -1) {
 					
@@ -89,7 +95,7 @@ int main(void){
 
 	do {
 
-		avance_generaciones (&salir, pmatriz, mat2, &tamano);
+		avance_generaciones (&salir, pmatriz, mat2, tamano, tamanofila);
 
 	}
 
