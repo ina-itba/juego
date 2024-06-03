@@ -7,10 +7,10 @@
 
 #define TAM_CEL 30
 
-static int contador (void* pmatriz, int f, int c, int tamano);
+static int contador (char* pmatriz, int f, int c, int tamano);
 
 // CONTADOR ASTERISCOS //
-static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las COORDENADAS de la CELULA A ANALIZAR
+static int contador (char* pmatriz, int f, int c, int tamano){ //f y c son las COORDENADAS de la CELULA A ANALIZAR
 
 	// MAT 3X3 RODEANDO PUNTERO //	
 	char mat3[3][3]; 				//mat 3 sera una matriz de 3x3 alrededor de la celula a analizar
@@ -18,11 +18,8 @@ static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las C
 	int j3;	
 	int i;
 	int j;						// contador columnas mat3. se debe reiniciar en cada for, lo defino abajo.
-	char * p;
 
-	p = pmatriz;
-
-	for (i = f-1;i < f+2;i += tamano) { 	// contador desde la fila anterior hasta la fila siguiente a puntero
+	for (i = f-1;i < f+2;i++) { 	// contador desde la fila anterior hasta la fila siguiente a puntero
 
 		j3 = 0;
 					
@@ -43,7 +40,7 @@ static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las C
         	}
         	else {
 
-        		mat3[i3][j3] = p[i+j];
+        		mat3[i3][j3] = pmatriz[i*tamano+j];
         	}
 
         	j3++;
@@ -73,13 +70,12 @@ static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las C
 	return cast;
 }
 
-void avance_generaciones (char* salir, void* pmatriz, char * mat2, int size, char * pall) {
+void avance_generaciones (char* salir, char * pmatriz, char * mat2, int size) {
 
 
 	int cast; // contador asteriscos
 	int gen;
 	int g, i, j, x, y;
-	char *p = pmatriz;
 
 	
 	printf("Ingrese cantidad de generaciones a avanzar:\n");
@@ -105,7 +101,7 @@ void avance_generaciones (char* salir, void* pmatriz, char * mat2, int size, cha
 				
 				cast = contador(pmatriz,i,j, size);
 				
-				switch(p[i+j]){
+				switch(pmatriz[i+j]){
 					
 					case ' ':
 
@@ -157,36 +153,11 @@ void avance_generaciones (char* salir, void* pmatriz, char * mat2, int size, cha
 			
 			for (x = 0;x < size;x++){
 				
-				p[y+x] = mat2[y+x];	//copia cada elemento en el mismo lugar pero de la otra matriz (= size)
+				pmatriz[y+x] = mat2[y+x];	//copia cada elemento en el mismo lugar pero de la otra matriz (= size)
 			
 			}
 		}
 	}	
-	pall = p;
-
-}
-
-
-void display_matriz(char* p,int tamanofila){
-
-	int n_cuad = 0;
-	int size = tamanofila*tamanofila;
-
-	for(int i = 0; i<size; i+=tamanofila){
-			for(int j=0; j<tamanofila; j++){
-				if( p[i+j] == '*'){
-					// dibujamos una celula
-					al_draw_filled_rectangle(j*TAM_CEL,n_cuad*TAM_CEL,j*TAM_CEL+TAM_CEL,n_cuad*TAM_CEL+TAM_CEL,al_map_rgb_f(255,0,0));
-				}
-			}
-			n_cuad++;
-		}
-
-	// hacemos las lineas separadoras de celulas
-	for(int i = 0; i < size; i++){
-			al_draw_line(0,i*TAM_CEL,tamanofila*TAM_CEL,i*TAM_CEL,al_map_rgb_f(128,128,128), 1);
-			al_draw_line(i*TAM_CEL,0,i*TAM_CEL,tamanofila*TAM_CEL,al_map_rgb_f(128,128,128), 1);
-		}
 
 }
 

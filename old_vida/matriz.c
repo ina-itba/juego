@@ -3,9 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ingreso_natural.h"
+#include <allegro5/allegro5.h>
+#include <allegro5/allegro_primitives.h>
 
 static unsigned char ingresoCelula(void);			//Funcion para ingresar por teclado el estado de una celula
-static void* tamano (int size);	//funcion encargada de reservar memoria en heap según el tamaño definido por el usuario
+static char* tamano (int size);	//funcion encargada de reservar memoria en heap según el tamaño definido por el usuario
 static void printEstadomatriz (char* pmatriz, int size);
 
 void * pfree;						//puntero para liberar espacio en el heap (global multiarchivo)
@@ -248,9 +250,9 @@ void* set(char* salir, int* tamanomatriz, int * tamanofila) {
 	return pmatrizfinal;
 }
 
-static void* tamano (int size) {
+static char* tamano (int size) {
 
-	void* pmatriz = calloc ((size*size), sizeof(char)); //defino puntero a void y lo inicializo en la salida del calloc
+	char* pmatriz = (char *)calloc ((size*size), sizeof(char)); //defino puntero a void y lo inicializo en la salida del calloc
 
 	return pmatriz;
 

@@ -3,6 +3,9 @@
 #include "matriz.h"
 #include "juego.h"
 #include "define_general.h"
+#include <allegro5/allegro5.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
 
 #define SALIR (printf("Ingreso 'q'. Fin del programa\n"))
 #define TAM_CEL 30
@@ -19,9 +22,9 @@ int main(void){
 	int tamano = 0;
 	int tamanofila = 0;
 	unsigned int cont;
-	void* pmatriz;
+	char* pmatriz = NULL;
 	char* mat2;						//matriz auxiliar para ir cargando los datos de avance de generacion
-	char* pall = NULL;
+	int n_cuad = 0;
 
 	// ---------- ELECCION MATRIZ INICIAL --------- //
 
@@ -89,8 +92,10 @@ int main(void){
 		pmatriz = mat;
 
 	}
-
-	mat2 = calloc (tamano, sizeof (char));
+	else	// else para debugear
+	{
+		mat2 = calloc (tamano, sizeof (char));
+	}
 
 	// INTEGRACION DISPLAY ALLEGRO
 	// SETUP ALLEGRO
@@ -104,33 +109,51 @@ int main(void){
 	al_register_event_source(queue, al_get_keyboard_event_source());
 	al_register_event_source(queue, al_get_display_event_source(disp));
 	al_register_event_source(queue, al_get_timer_event_source(timer));
-	ALLEGRO_EVENT event;
+	//bool redraw = false;
 
 	// dibujar
 	al_init_primitives_addon();
 	al_start_timer(timer);
 
+	int size = tamanofila*tamanofila;
+
 	do {
-
-		avance_generaciones (&salir, pmatriz, mat2, tamano, pall);
-		al_wait_for_event(queue, &event);
-
+		avance_generaciones (&salir, pmatriz, mat2, tamano);
+		ALLEGRO_EVENT event;
+		if(al_get_next_event(queue,&event))
+		{
 			if(event.type == ALLEGRO_EVENT_TIMER)
 			{
-				printf("hola\n");
+				/*------Dibuja Cuadraditos------*/
+				for(int i = 0; i<size; i+=tamanofila)
+				{
+					for(int j=0; j<tamanofila; j++)
+					{
+						if(*(pmatriz + i + j) == '*')
+						{
+							// dibujamos una celula
+							al_draw_filled_rectangle(j*TAM_CEL,n_cuad*TAM_CEL,j*TAM_CEL+TAM_CEL,n_cuad*TAM_CEL+TAM_CEL,al_map_rgb_f(255,0,0));
+						}
+					}
+					n_cuad++;
+				}
+				/*------Termina de Dibujar Cuadraditos------*/
+
+				/*------Dibuja Grilla------*/
+				for(int i = 0; i < size; i++)
+				{
+					al_draw_line(0,i*TAM_CEL,tamanofila*TAM_CEL,i*TAM_CEL,al_map_rgb_f(128,128,128), 1);
+					al_draw_line(i*TAM_CEL,0,i*TAM_CEL,tamanofila*TAM_CEL,al_map_rgb_f(128,128,128), 1);
+				}
+				/*------Termina de Dibujar Grilla------*/
+
+1				al_flip_display();
 			}
-			else if((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)){
-				break;
-			}
-
-			if(al_is_event_queue_empty(queue))
-			{
-
-				display_matriz(pall,tamanofila);
-				al_flip_display();
-
-			}
-
+		}
+		else if((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE))
+		{
+			salir = -1;
+		}
 	}
 
 	while (salir != -1);
