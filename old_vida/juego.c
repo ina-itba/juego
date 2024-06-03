@@ -1,6 +1,3 @@
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_primitives.h>
 #include "define_general.h"
 #include "ingreso_natural.h"
 #include "juego.h"
@@ -11,7 +8,6 @@
 #define TAM_CEL 30
 
 static int contador (void* pmatriz, int f, int c, int tamano);
-static void display_matriz(char* p, int size, int tamanofila);
 
 // CONTADOR ASTERISCOS //
 static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las COORDENADAS de la CELULA A ANALIZAR
@@ -77,8 +73,7 @@ static int contador (void* pmatriz, int f, int c, int tamano){ //f y c son las C
 	return cast;
 }
 
-void avance_generaciones (char* salir, void* pmatriz, char * mat2, int size, int tamanofila) {
-
+void avance_generaciones (char* salir, void* pmatriz, char * mat2, int size, char * pall) {
 
 
 	int cast; // contador asteriscos
@@ -167,81 +162,15 @@ void avance_generaciones (char* salir, void* pmatriz, char * mat2, int size, int
 			}
 		}
 	}	
-	
-	// CAMBIAR ALEGRO  CAMBIARRRRRRRRRRR , pasar p
-
-	printf("\n"); //bajo casilla para hacer el nuevo display
-	
-
-
-	// INTEGRACION DISPLAY ALLEGRO
-	// SETUP ALLEGRO
-
-	al_install_keyboard();
-
-	ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
-	ALLEGRO_DISPLAY* disp = al_create_display(tamanofila*TAM_CEL, tamanofila*TAM_CEL);
-	ALLEGRO_TIMER * timer = al_create_timer(1.0/30.0);
-
-	al_register_event_source(queue, al_get_keyboard_event_source());
-	al_register_event_source(queue, al_get_display_event_source(disp));
-	al_register_event_source(queue, al_get_timer_event_source(timer));
-	ALLEGRO_EVENT event;
-
-	// dibujar
-	al_init_primitives_addon();
-	al_start_timer(timer);
-
-	al_wait_for_event(queue, &event);
-
-	if(event.type == ALLEGRO_EVENT_TIMER)
-	{
-		printf("hola");
-	}
-	else if((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)){
-		return;
-	}
-
-	if(al_is_event_queue_empty(queue))
-	{
-
-		//char p[32*32];	//arr de ejemplo, lo manejamos como gran arr
-
-		/*for(int i = 0; i<(f*c); i+=c){
-			for(int j=0; j<32; j++){
-				if((j%2) != 0){
-					*(p+i+j) = ' ';
-				}else {
-					*(p+i+j) = '*';
-				}
-			}
-		}*/
-		/*for(unsigned int i = 0; i < size; i+=tamanofila)
-		{
-			for(unsigned int j; i < tamanofila; j++)
-			{
-				printf("%c",p[i+j]);
-			}
-			printf("\n");
-		}
-		printf("\n");*/
-
-		display_matriz(p,size,tamanofila);
-
-		al_flip_display();
-
-	}
-
-	/*al_destroy_display(disp);
-	al_destroy_event_queue(queue);
-	al_destroy_timer(timer);*/
+	pall = p;
 
 }
 
 
-static void display_matriz(char* p,int size, int tamanofila){
+void display_matriz(char* p,int tamanofila){
 
 	int n_cuad = 0;
+	int size = tamanofila*tamanofila;
 
 	for(int i = 0; i<size; i+=tamanofila){
 			for(int j=0; j<tamanofila; j++){

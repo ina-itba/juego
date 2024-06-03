@@ -146,7 +146,7 @@ static unsigned char ingresoCelula(void)
 
 }
 
-void* set(char* salir, int* tamanomatriz, int *  tamanofila) {
+void* set(char* salir, int* tamanomatriz, int * tamanofila) {
 	
 	int i,j;
 	unsigned char ingresoColumna;
@@ -160,6 +160,7 @@ void* set(char* salir, int* tamanomatriz, int *  tamanofila) {
 	printf("Ingrese el tamaño de la matriz cuadrada: \n");
 
 	tamanoMatrizfila = ingreso_natural(); //ingreso de tamaño de matriz cuadrado a gusto por el usuario
+
 	*tamanofila = tamanoMatrizfila;
 
 	pmatrizdefinida = tamano (tamanoMatrizfila); //obtencion del puntero a la matriz alojada en el heap de dimension variable
